@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isUser(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isEntityUser() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isEntity', false) == true;
+    }
+
+    match /users/{userId} {
+      allow read, delete: if isUser(userId);
+
+      allow create: if isUser(userId)
+        && request.resource.data.id == request.auth.uid
+        && request.resource.data.get('isEntity', false) == false
+        && request.resource.data.get('isPremium', false) == false;
+
+      allow update: if isUser(userId)
+        && request.resource.data.id == request.auth.uid
+        && request.resource.data.get('isEntity', false)
+            == resource.data.get('isEntity', false)
+        && request.resource.data.get('isPremium', false)
+            == resource.data.get('isPremium', false);
+    }
+
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == resource.data.ownerId;
+      allow delete: if signedIn()
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    match /bookings/{bookingId} {
+      allow read: if signedIn()
+        && (resource.data.userId == request.auth.uid || isEntityUser());
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if signedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    match /notifications/{notificationId} {
+      allow read, update, delete: if signedIn()
+        && resource.data.ownerId == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.ownerId is string
+        && request.resource.data.ownerId.size() > 0;
+    }
+
+    match /whatsapp_contacts/{contactId} {
+      allow read, update, delete: if signedIn()
+        && resource.data.ownerId == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.ownerId is string
+        && request.resource.data.ownerId.size() > 0;
+    }
+  }
+}

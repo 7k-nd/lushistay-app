@@ -1,0 +1,17 @@
+# Copy to key.properties (gitignored) and fill in real values.
+# Place the .jks next to this path relative to android/app/ (default below).
+#
+# Generate once (PowerShell / terminal):
+#   keytool -genkey -v `
+#     -keystore android/app/immotrust-upload.jks `
+#     -storetype JKS `
+#     -keyalg RSA -keysize 2048 -validity 10000 `
+#     -alias immotrust
+#
+# Keep a secure offline backup of the .jks + passwords.
+# After first Play upload, enable Play App Signing in Play Console.
+
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=immotrust
+storeFile=immotrust-upload.jks

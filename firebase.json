@@ -1,0 +1,50 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "lushistay-app",
+          "appId": "1:203678448927:android:df664edef45ef7084dc42a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "lushistay-app",
+          "configurations": {
+            "android": "1:203678448927:android:df664edef45ef7084dc42a",
+            "ios": "1:203678448927:ios:c669fc166f34148e4dc42a",
+            "web": "1:203678448927:web:6bde2c80ffe709414dc42a",
+            "windows": "1:203678448927:web:bb4eaba97b09b9554dc42a"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(html)",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      }
+    ]
+  }
+}

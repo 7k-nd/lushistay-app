@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "203678448927",
+    "project_id": "lushistay-app",
+    "storage_bucket": "lushistay-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203678448927:android:df664edef45ef7084dc42a",
+        "android_client_info": {
+          "package_name": "app.immotrust.client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS7P73yxi4IujsGAx6YoGOgxPIyFRDuOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
