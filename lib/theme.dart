@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LushiStayTheme {
-  // Brand Palette - Lubumbashi Copper Luxury 2026
+  // ─── Brand Palette — Dark Airbnb 2026 ───
   static const Color bg = Color(0xFF0B111E);
   static const Color bgSurface = Color(0xFF0E1626);
   static const Color bgCard = Color(0xFF141D2E);
@@ -11,6 +11,7 @@ class LushiStayTheme {
   static const Color inputBg = Color(0xFF131C2D);
   static const Color inputBorder = Color(0xFF22324D);
 
+  // Airbnb pink adapted to copper for Lubumbashi
   static const Color copper = Color(0xFFC27849);
   static const Color copperDark = Color(0xFFA56037);
   static const Color copperLight = Color(0xFFD98A5B);
@@ -29,7 +30,7 @@ class LushiStayTheme {
   static const Color destructive = Color(0xFFEF4444);
   static const Color success = Color(0xFF22C55E);
 
-  // Compatibility aliases
+  // Compatibility aliases (old screens still reference these)
   static const Color accent = Color(0xFF0E1626);
   static const Color secondaryText = Color(0xFF94A3B8);
   static const Color grayLight = Color(0xFF1E2C44);
@@ -38,66 +39,67 @@ class LushiStayTheme {
   static const Color systemGrey5 = Color(0xFF1E2B42);
   static const Color transparent = Color(0x00000000);
 
+  // ─── Shadows ───
   static List<BoxShadow> get softShadow => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.3),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
+          color: Colors.black.withValues(alpha: 0.2),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
         ),
       ];
 
   static List<BoxShadow> get strongShadow => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.45),
-          blurRadius: 30,
-          offset: const Offset(0, 12),
+          color: Colors.black.withValues(alpha: 0.35),
+          blurRadius: 24,
+          offset: const Offset(0, 8),
         ),
       ];
-
-  static BoxDecoration get glassDecoration => BoxDecoration(
-        color: bgCard.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: cardBorder, width: 1),
-      );
 
   static List<BoxShadow> get cardShadow => softShadow;
 
   static List<BoxShadow> get copperGlow => [
         BoxShadow(
-          color: copper.withValues(alpha: 0.25),
-          blurRadius: 16,
+          color: copper.withValues(alpha: 0.2),
+          blurRadius: 12,
           offset: const Offset(0, 4),
         ),
       ];
 
+  // ─── Decorations ───
+  static BoxDecoration get glassDecoration => BoxDecoration(
+        color: bgCard.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cardBorder, width: 1),
+      );
+
   static BoxDecoration get cardDecoration => BoxDecoration(
         color: bgCard,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: cardBorder, width: 1),
-        boxShadow: cardShadow,
       );
 
-  // Typography
-  static TextStyle get displayLarge => GoogleFonts.playfairDisplay(
+  // ─── Typography (all sans-serif like Airbnb Cereal → Plus Jakarta Sans) ───
+  static TextStyle get displayLarge => GoogleFonts.plusJakartaSans(
         color: white,
-        fontWeight: FontWeight.bold,
-        fontSize: 32,
+        fontWeight: FontWeight.w800,
+        fontSize: 30,
         letterSpacing: -0.5,
-        height: 1.15,
-      );
-
-  static TextStyle get displayMedium => GoogleFonts.playfairDisplay(
-        color: white,
-        fontWeight: FontWeight.bold,
-        fontSize: 26,
-        letterSpacing: -0.3,
         height: 1.2,
       );
 
-  static TextStyle get displaySmall => GoogleFonts.playfairDisplay(
+  static TextStyle get displayMedium => GoogleFonts.plusJakartaSans(
         color: white,
         fontWeight: FontWeight.w700,
-        fontSize: 22,
+        fontSize: 24,
+        letterSpacing: -0.3,
+        height: 1.25,
+      );
+
+  static TextStyle get displaySmall => GoogleFonts.plusJakartaSans(
+        color: white,
+        fontWeight: FontWeight.w700,
+        fontSize: 20,
       );
 
   static TextStyle get titleLarge => GoogleFonts.plusJakartaSans(
@@ -144,7 +146,7 @@ class LushiStayTheme {
         letterSpacing: 1.5,
       );
 
-  // Material 3 Theme
+  // ─── Material 3 Theme ───
   static ThemeData get materialTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
@@ -172,7 +174,7 @@ class LushiStayTheme {
         ),
       );
 
-  // Cupertino Theme for cross-platform
+  // ─── Cupertino Theme (cross-platform compat) ───
   static CupertinoThemeData get cupertinoTheme => CupertinoThemeData(
         brightness: Brightness.dark,
         primaryColor: copper,
@@ -184,9 +186,9 @@ class LushiStayTheme {
             color: textPrimary,
             fontSize: 15,
           ),
-          navTitleTextStyle: GoogleFonts.playfairDisplay(
+          navTitleTextStyle: GoogleFonts.plusJakartaSans(
             color: white,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
         ),

@@ -15,17 +15,15 @@ class BookingsScreen extends StatefulWidget {
 }
 
 class _BookingsScreenState extends State<BookingsScreen> {
-  int _selectedTab = 0; // 0 = En cours, 1 = Passés
+  int _selectedTab = 0; // 0 = À venir, 1 = Passés
 
   @override
   Widget build(BuildContext context) {
     final bookings = MockData.bookings;
     final now = DateTime.now();
 
-    final activeBookings =
-        bookings.where((b) => b.endDate.isAfter(now)).toList();
-    final pastBookings =
-        bookings.where((b) => b.endDate.isBefore(now)).toList();
+    final activeBookings = bookings.where((b) => b.endDate.isAfter(now)).toList();
+    final pastBookings = bookings.where((b) => b.endDate.isBefore(now)).toList();
     final currentList = _selectedTab == 0 ? activeBookings : pastBookings;
 
     return Scaffold(
@@ -40,89 +38,22 @@ class _BookingsScreenState extends State<BookingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'VOS ESCAPADES',
+                      'Voyages',
                       style: GoogleFonts.plusJakartaSans(
-                        color: LushiStayTheme.copperLight,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
-                    const Gap(4),
-                    Text(
-                      'Mes Voyages',
-                      style: GoogleFonts.playfairDisplay(
                         color: Colors.white,
-                        fontSize: 27,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const Gap(16),
-                    // Segmented Tabs: "À venir / En cours" vs "Historique"
-                    Container(
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: LushiStayTheme.bgCard,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: LushiStayTheme.cardBorder),
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => setState(() => _selectedTab = 0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: _selectedTab == 0
-                                      ? LushiStayTheme.copper
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'À venir (${activeBookings.length})',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: _selectedTab == 0
-                                        ? Colors.white
-                                        : LushiStayTheme.textSecondary,
-                                    fontSize: 13,
-                                    fontWeight: _selectedTab == 0
-                                        ? FontWeight.w700
-                                        : FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => setState(() => _selectedTab = 1),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: _selectedTab == 1
-                                      ? LushiStayTheme.copper
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Historique (${pastBookings.length})',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: _selectedTab == 1
-                                        ? Colors.white
-                                        : LushiStayTheme.textSecondary,
-                                    fontSize: 13,
-                                    fontWeight: _selectedTab == 1
-                                        ? FontWeight.w700
-                                        : FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    // Airbnb style clean pill switcher
+                    Row(
+                      children: [
+                        _buildTabPill(0, 'À venir (${activeBookings.length})'),
+                        const Gap(10),
+                        _buildTabPill(1, 'Passés (${pastBookings.length})'),
+                      ],
                     ),
                   ],
                 ),
@@ -131,58 +62,57 @@ class _BookingsScreenState extends State<BookingsScreen> {
             if (currentList.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-                  child: Column(
-                    children: [
-                      const Icon(Icons.luggage_rounded,
-                          size: 48, color: LushiStayTheme.textMuted),
-                      const Gap(14),
-                      Text(
-                        _selectedTab == 0
-                            ? 'Aucun voyage prévu pour l\'instant'
-                            : 'Aucun historique de séjour',
-                        style: GoogleFonts.playfairDisplay(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.luggage_outlined,
+                          size: 48,
+                          color: LushiStayTheme.textMuted,
                         ),
-                      ),
-                      const Gap(8),
-                      Text(
-                        'Découvrez nos villas et hôtels d\'exception dans l\'onglet Explorer.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.plusJakartaSans(
-                          color: LushiStayTheme.textSecondary,
-                          fontSize: 13,
+                        const Gap(16),
+                        Text(
+                          _selectedTab == 0
+                              ? 'Aucun voyage prévu pour le moment'
+                              : 'Aucun voyage passé',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                    ],
+                        const Gap(8),
+                        Text(
+                          'Il est temps de dépoussiérer vos valises et de planifier votre prochaine escapade à Lubumbashi.',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: LushiStayTheme.textSecondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
             else
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final b = currentList[index];
-                      final startStr =
-                          DateFormat('dd MMM yyyy', 'fr_FR').format(b.startDate);
-                      final endStr =
-                          DateFormat('dd MMM yyyy', 'fr_FR').format(b.endDate);
-                      final propImage = b.property.images.isNotEmpty
-                          ? b.property.images.first
-                          : '';
+                      final startStr = DateFormat('dd MMM', 'fr_FR').format(b.startDate);
+                      final endStr = DateFormat('dd MMM yyyy', 'fr_FR').format(b.endDate);
+                      final propImage = b.property.images.isNotEmpty ? b.property.images.first : '';
 
                       return Container(
-                        margin: const EdgeInsets.only(bottom: 18),
+                        margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
                           color: LushiStayTheme.bgCard,
-                          borderRadius: BorderRadius.circular(22),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: LushiStayTheme.cardBorder),
-                          boxShadow: LushiStayTheme.cardShadow,
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: Column(
@@ -195,62 +125,58 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                 child: CachedNetworkImage(
                                   imageUrl: propImage,
                                   fit: BoxFit.cover,
+                                  placeholder: (_, __) => Container(color: LushiStayTheme.bgSurface),
                                 ),
                               ),
                             Padding(
-                              padding: const EdgeInsets.all(18),
+                              padding: const EdgeInsets.all(16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
+                                      Text(
+                                        'Séjour à ${b.property.quartier}',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: LushiStayTheme.textMuted,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 4),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFF0F5A37),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: Text(
                                           'Confirmé',
                                           style: GoogleFonts.plusJakartaSans(
                                             color: const Color(0xFF4ADE80),
-                                            fontSize: 11.5,
+                                            fontSize: 11,
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
                                       ),
-                                      Text(
-                                        '\$${b.totalPrice}',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: Colors.white,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
                                     ],
                                   ),
-                                  const Gap(10),
+                                  const Gap(6),
                                   Text(
                                     b.property.title,
-                                    style: GoogleFonts.playfairDisplay(
+                                    style: GoogleFonts.plusJakartaSans(
                                       color: Colors.white,
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  const Gap(6),
+                                  const Gap(8),
                                   Row(
                                     children: [
-                                      const Icon(Icons.calendar_today_rounded,
-                                          size: 14,
-                                          color: LushiStayTheme.copperLight),
+                                      const Icon(Icons.calendar_today_outlined, size: 14, color: LushiStayTheme.copperLight),
                                       const Gap(6),
                                       Text(
-                                        '$startStr  →  $endStr',
+                                        '$startStr – $endStr',
                                         style: GoogleFonts.plusJakartaSans(
                                           color: LushiStayTheme.textSecondary,
                                           fontSize: 13,
@@ -261,15 +187,13 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                   const Gap(6),
                                   Row(
                                     children: [
-                                      const Icon(Icons.person_outline_rounded,
-                                          size: 15,
-                                          color: LushiStayTheme.textSecondary),
+                                      const Icon(Icons.person_outline, size: 14, color: LushiStayTheme.textMuted),
                                       const Gap(6),
                                       Text(
-                                        'Réservation au nom de ${b.userName}',
+                                        'Réservé par ${b.userName}',
                                         style: GoogleFonts.plusJakartaSans(
                                           color: LushiStayTheme.textMuted,
-                                          fontSize: 12.5,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ],
@@ -279,13 +203,38 @@ class _BookingsScreenState extends State<BookingsScreen> {
                             ),
                           ],
                         ),
-                      ).animate().fadeIn(duration: 350.ms);
+                      ).animate().fadeIn(duration: 300.ms);
                     },
                     childCount: currentList.length,
                   ),
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabPill(int index, String label) {
+    final isSelected = _selectedTab == index;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedTab = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : LushiStayTheme.bgCard,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? Colors.white : LushiStayTheme.cardBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            color: isSelected ? Colors.black : Colors.white,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+          ),
         ),
       ),
     );

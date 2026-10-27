@@ -4,7 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:elxau/theme.dart';
-import 'package:elxau/brand_config.dart';
 import 'package:elxau/services/auth_service.dart';
 import 'package:elxau/main_navigation.dart';
 
@@ -16,29 +15,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _nameController = TextEditingController(text: 'Grâce Mwamba');
   final _emailController = TextEditingController(text: 'vous@exemple.cd');
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleContinue({bool isInstantDemo = false}) async {
+  Future<void> _handleLogin({bool isDemo = false}) async {
     setState(() => _isLoading = true);
     final auth = context.read<AuthService>();
 
-    final email = _emailController.text.trim().isEmpty
-        ? 'vous@exemple.cd'
-        : _emailController.text.trim();
+    final email = isDemo
+        ? 'demo@lushistay.cd'
+        : (_emailController.text.trim().isEmpty
+            ? 'vous@exemple.cd'
+            : _emailController.text.trim());
 
     try {
       await auth.signIn(email: email, password: 'demo-password-2026');
     } catch (_) {
-      // Demo fallback always succeeds
+      // Demo fallback
     }
 
     if (!mounted) return;
@@ -49,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
         pageBuilder: (context, anim, secAnim) => const MainNavigation(),
         transitionsBuilder: (context, anim, secAnim, child) =>
             FadeTransition(opacity: anim, child: child),
-        transitionDuration: const Duration(milliseconds: 350),
+        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
   }
@@ -58,330 +57,229 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LushiStayTheme.bg,
-      body: Stack(
-        children: [
-          // Background City Night Mood Overlay
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF070C15).withValues(alpha: 0.9),
-                    const Color(0xFF0B111E).withValues(alpha: 0.96),
-                    LushiStayTheme.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const Spacer(flex: 2),
+
+              // Logo
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: LushiStayTheme.copper,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.apartment_rounded,
+                  color: Colors.white,
+                  size: 36,
+                ),
+              ).animate().fadeIn(duration: 500.ms).scale(
+                    begin: const Offset(0.8, 0.8),
+                    end: const Offset(1, 1),
+                    curve: Curves.easeOutBack,
+                  ),
+
+              const Gap(24),
+
+              // Title
+              Text(
+                'LushiStay',
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ).animate().fadeIn(delay: 100.ms, duration: 400.ms),
+
+              const Gap(8),
+
+              Text(
+                'Séjours d\'exception à Lubumbashi',
+                style: GoogleFonts.plusJakartaSans(
+                  color: LushiStayTheme.textSecondary,
+                  fontSize: 15,
+                ),
+              ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
+
+              const Spacer(),
+
+              // Email field
+              Container(
+                height: 56,
+                decoration: BoxDecoration(
+                  color: LushiStayTheme.bgCard,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: LushiStayTheme.cardBorder),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.email_outlined,
+                      color: LushiStayTheme.textMuted,
+                      size: 20,
+                    ),
+                    const Gap(12),
+                    Expanded(
+                      child: TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: GoogleFonts.plusJakartaSans(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                        cursorColor: LushiStayTheme.copper,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Email',
+                          hintStyle: GoogleFonts.plusJakartaSans(
+                            color: LushiStayTheme.textMuted,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ),
-          ),
+              ).animate().fadeIn(delay: 300.ms),
 
-          // Ambient subtle copper glow at top
-          Positioned(
-            top: -100,
-            left: MediaQuery.of(context).size.width * 0.2,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: LushiStayTheme.copper.withValues(alpha: 0.12),
-                boxShadow: [
-                  BoxShadow(
-                    color: LushiStayTheme.copper.withValues(alpha: 0.15),
-                    blurRadius: 120,
-                    spreadRadius: 40,
+              const Gap(12),
+
+              // Continue button - Airbnb style gradient pink/copper
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : () => _handleLogin(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: LushiStayTheme.copper,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          'Continuer',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                ),
+              ).animate().fadeIn(delay: 350.ms),
+
+              const Gap(20),
+
+              // Divider with "ou"
+              Row(
+                children: [
+                  const Expanded(
+                    child: Divider(color: LushiStayTheme.cardBorder),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'ou',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: LushiStayTheme.textMuted,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  const Expanded(
+                    child: Divider(color: LushiStayTheme.cardBorder),
                   ),
                 ],
               ),
-            ),
+
+              const Gap(20),
+
+              // Social login buttons - Airbnb style (outlined, full-width, icon left)
+              _buildSocialButton(
+                icon: Icons.g_mobiledata_rounded,
+                label: 'Continuer avec Google',
+                onTap: () => _handleLogin(isDemo: true),
+              ),
+              const Gap(12),
+              _buildSocialButton(
+                icon: Icons.apple_rounded,
+                label: 'Continuer avec Apple',
+                onTap: () => _handleLogin(isDemo: true),
+              ),
+              const Gap(12),
+              _buildSocialButton(
+                icon: Icons.phone_outlined,
+                label: 'Continuer avec Téléphone',
+                onTap: () => _handleLogin(isDemo: true),
+              ),
+
+              const Gap(24),
+
+              // Demo note
+              Text(
+                'Mode démo · Aucune donnée réelle',
+                style: GoogleFonts.plusJakartaSans(
+                  color: LushiStayTheme.textMuted,
+                  fontSize: 12,
+                ),
+              ),
+
+              const Spacer(),
+            ],
           ),
+        ),
+      ),
+    );
+  }
 
-          SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Gap(16),
-
-                    // Top Logo: Copper Diamond + LushiStay
-                    Row(
-                      children: [
-                        Transform.rotate(
-                          angle: 0.785398, // 45 degrees
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  LushiStayTheme.copperLight,
-                                  LushiStayTheme.copper,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: LushiStayTheme.copper
-                                      .withValues(alpha: 0.4),
-                                  blurRadius: 10,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Gap(14),
-                        Text(
-                          'LushiStay',
-                          style: GoogleFonts.playfairDisplay(
-                            color: LushiStayTheme.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.2),
-
-                    const Gap(36),
-
-                    // Main Headline
-                    Text(
-                      'Séjours d\'exception\nà Lubumbashi',
-                      style: GoogleFonts.playfairDisplay(
-                        color: LushiStayTheme.white,
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -0.5,
-                        height: 1.15,
-                      ),
-                    ).animate().fadeIn(delay: 100.ms, duration: 450.ms),
-
-                    const Gap(14),
-
-                    // Subtitle
-                    Text(
-                      'Villas, appartements et chambres d\'hôtel premium dans la capitale du cuivre.',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: LushiStayTheme.textSecondary,
-                        fontSize: 14.5,
-                        height: 1.5,
-                      ),
-                    ).animate().fadeIn(delay: 200.ms, duration: 450.ms),
-
-                    const Gap(40),
-
-                    // Form - Nom complet
-                    Text(
-                      'Nom complet',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: LushiStayTheme.textSecondary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const Gap(8),
-                    Container(
-                      height: 54,
-                      decoration: BoxDecoration(
-                        color: LushiStayTheme.inputBg,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: LushiStayTheme.inputBorder),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Center(
-                        child: TextField(
-                          controller: _nameController,
-                          style: GoogleFonts.plusJakartaSans(
-                            color: LushiStayTheme.white,
-                            fontSize: 15,
-                          ),
-                          cursorColor: LushiStayTheme.copper,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Ex. Grâce Mwamba',
-                            hintStyle: GoogleFonts.plusJakartaSans(
-                              color: LushiStayTheme.textMuted,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 250.ms),
-
-                    const Gap(18),
-
-                    // Form - Email
-                    Text(
-                      'Email',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: LushiStayTheme.textSecondary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const Gap(8),
-                    Container(
-                      height: 54,
-                      decoration: BoxDecoration(
-                        color: LushiStayTheme.inputBg,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: LushiStayTheme.inputBorder),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Center(
-                        child: TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: GoogleFonts.plusJakartaSans(
-                            color: LushiStayTheme.white,
-                            fontSize: 15,
-                          ),
-                          cursorColor: LushiStayTheme.copper,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'vous@exemple.cd',
-                            hintStyle: GoogleFonts.plusJakartaSans(
-                              color: LushiStayTheme.textMuted,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 300.ms),
-
-                    const Gap(28),
-
-                    // Primary Button: "Continuer"
-                    SizedBox(
-                      height: 54,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : () => _handleContinue(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: LushiStayTheme.copper,
-                          foregroundColor: LushiStayTheme.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28),
-                          ),
-                        ),
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )
-                            : Text(
-                                'Continuer',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                      ),
-                    ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.1),
-
-                    const Gap(24),
-
-                    // Divider with "ou"
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Divider(
-                            color: LushiStayTheme.cardBorder,
-                            thickness: 1,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'ou',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: LushiStayTheme.textMuted,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                        const Expanded(
-                          child: Divider(
-                            color: LushiStayTheme.cardBorder,
-                            thickness: 1,
-                          ),
-                        ),
-                      ],
-                    ).animate().fadeIn(delay: 400.ms),
-
-                    const Gap(24),
-
-                    // Secondary Demo Button: "⚡ Accès démo instantané"
-                    SizedBox(
-                      height: 54,
-                      child: OutlinedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () => _handleContinue(isInstantDemo: true),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: LushiStayTheme.inputBg,
-                          foregroundColor: LushiStayTheme.white,
-                          side: const BorderSide(
-                            color: LushiStayTheme.inputBorder,
-                            width: 1,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.bolt_rounded,
-                              color: LushiStayTheme.gold,
-                              size: 20,
-                            ),
-                            const Gap(8),
-                            Text(
-                              'Accès démo instantané',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 450.ms).slideY(begin: 0.1),
-
-                    const Gap(28),
-
-                    // Demo Mode Note
-                    Center(
-                      child: Text(
-                        BrandConfig.demoSubtitle,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.plusJakartaSans(
-                          color: LushiStayTheme.textMuted,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 500.ms),
-
-                    const Gap(24),
-                  ],
+  Widget _buildSocialButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton(
+        onPressed: _isLoading ? null : onTap,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white,
+          side: const BorderSide(color: LushiStayTheme.cardBorder),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 24, color: Colors.white),
+            Expanded(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 24), // Balance the icon
+          ],
+        ),
       ),
     );
   }

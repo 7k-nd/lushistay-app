@@ -12,7 +12,7 @@ class PropertyCard extends StatefulWidget {
   final VoidCallback? onTap;
   final bool isFavorite;
   final ValueChanged<bool>? onFavoriteToggle;
-  final bool isHorizontal;
+  final bool isHorizontal; // compat param, unused
 
   const PropertyCard({
     super.key,
@@ -29,263 +29,221 @@ class PropertyCard extends StatefulWidget {
 
 class _PropertyCardState extends State<PropertyCard> {
   late bool _isFavorite;
+  int _currentPage = 0;
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _isFavorite = widget.isFavorite;
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void _toggleFavorite() {
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
+    setState(() => _isFavorite = !_isFavorite);
     widget.onFavoriteToggle?.call(_isFavorite);
   }
 
   @override
   Widget build(BuildContext context) {
     final p = widget.property;
-    final isHotel = p.type == PropertyType.hotel;
-    final tagLabel = p.type.label == 'Maison' ? 'Villa' : p.type.label;
-    final tagIcon = isHotel
-        ? Icons.apartment_rounded
-        : (p.type == PropertyType.house
-            ? Icons.home_rounded
-            : Icons.dashboard_rounded);
+    final images = p.images.isNotEmpty
+        ? p.images
+        : ['https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200'];
 
-    final imageUrl = p.images.isNotEmpty
-        ? p.images.first
-        : 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200';
+    final bedrooms = p.features.bedrooms ?? 0;
+    final bathrooms = p.features.bathrooms ?? 0;
 
     return GestureDetector(
       onTap: widget.onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 22),
-        decoration: BoxDecoration(
-          color: LushiStayTheme.bgCard,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: LushiStayTheme.cardBorder, width: 1),
-          boxShadow: LushiStayTheme.cardShadow,
-        ),
-        clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 26),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Stack
+            // ─── Image carousel ───
             Stack(
               children: [
-                SizedBox(
-                  height: 230,
-                  width: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: LushiStayTheme.bgSurface,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              LushiStayTheme.copper),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: LushiStayTheme.bgSurface,
-                      child: const Icon(Icons.broken_image_rounded,
-                          color: LushiStayTheme.textMuted, size: 40),
-                    ),
-                  ),
-                ),
-                // Gradient Shadow on bottom of image for contrast
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 0.15),
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.75),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                // Top Left: Category Badge
-                Positioned(
-                  top: 14,
-                  left: 14,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: isHotel
-                          ? LushiStayTheme.hotelGreen
-                          : Colors.black.withValues(alpha: 0.65),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isHotel
-                            ? LushiStayTheme.hotelGreenText.withValues(alpha: 0.4)
-                            : Colors.white.withValues(alpha: 0.15),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          tagIcon,
-                          size: 14,
-                          color: isHotel
-                              ? LushiStayTheme.hotelGreenText
-                              : Colors.white,
-                        ),
-                        const Gap(5),
-                        Text(
-                          tagLabel,
-                          style: GoogleFonts.plusJakartaSans(
-                            color: isHotel
-                                ? LushiStayTheme.white
-                                : Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox(
+                    height: 240,
+                    width: double.infinity,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: images.length,
+                      onPageChanged: (i) => setState(() => _currentPage = i),
+                      itemBuilder: (context, index) {
+                        return CachedNetworkImage(
+                          imageUrl: images[index],
+                          fit: BoxFit.cover,
+                          placeholder: (ctx, url) => Container(
+                            color: LushiStayTheme.bgCard,
                           ),
+                          errorWidget: (ctx, url, err) => Container(
+                            color: LushiStayTheme.bgCard,
+                            child: const Icon(
+                              Icons.image_not_supported_outlined,
+                              color: LushiStayTheme.textMuted,
+                              size: 32,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                // Heart — top right, Airbnb style (no background)
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: GestureDetector(
+                    onTap: _toggleFavorite,
+                    child: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? LushiStayTheme.destructive : Colors.white,
+                      size: 26,
+                      shadows: const [
+                        Shadow(
+                          color: Colors.black54,
+                          blurRadius: 6,
                         ),
                       ],
                     ),
                   ),
                 ),
-                // Top Right: Favorite Button
-                Positioned(
-                  top: 14,
-                  right: 14,
-                  child: GestureDetector(
-                    onTap: _toggleFavorite,
-                    child: Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.55),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                      ),
-                      child: Icon(
-                        _isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: _isFavorite
-                            ? const Color(0xFFEF4444)
-                            : Colors.white,
-                        size: 20,
+
+                // Dot indicators — bottom center
+                if (images.length > 1)
+                  Positioned(
+                    bottom: 10,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        images.length > 5 ? 5 : images.length,
+                        (idx) {
+                          final isActive = idx == _currentPage;
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            height: 6,
+                            width: 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isActive
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.5),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
-                ),
-                // Bottom of Image: Location & Rating preview
-                Positioned(
-                  bottom: 12,
-                  left: 16,
-                  right: 16,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 15,
-                        color: LushiStayTheme.copperLight,
-                      ),
-                      const Gap(4),
-                      Text(
-                        '${p.quartier} · ${p.ville}',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white.withValues(alpha: 0.95),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const Spacer(),
-                      const Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: LushiStayTheme.gold,
-                      ),
-                      const Gap(3),
-                      Text(
-                        p.rating.toStringAsFixed(2),
-                        style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+              ],
+            ),
+
+            const Gap(10),
+
+            // ─── Text content below image ───
+            // Row 1: Location — Rating
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    '${p.quartier}, ${p.ville}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: LushiStayTheme.textPrimary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.star_rounded,
+                      size: 14,
+                      color: LushiStayTheme.textPrimary,
+                    ),
+                    const Gap(3),
+                    Text(
+                      p.rating.toStringAsFixed(2),
+                      style: GoogleFonts.plusJakartaSans(
+                        color: LushiStayTheme.textPrimary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            // Card Content Section
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+
+            const Gap(2),
+
+            // Row 2: Title
+            Text(
+              p.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.plusJakartaSans(
+                color: LushiStayTheme.textSecondary,
+                fontSize: 14,
+              ),
+            ),
+
+            const Gap(2),
+
+            // Row 3: Features
+            Text(
+              '$bedrooms ch. · $bathrooms sdb',
+              style: GoogleFonts.plusJakartaSans(
+                color: LushiStayTheme.textSecondary,
+                fontSize: 14,
+              ),
+            ),
+
+            const Gap(6),
+
+            // Row 4: Price
+            RichText(
+              text: TextSpan(
                 children: [
-                  // Title
-                  Text(
-                    p.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.playfairDisplay(
-                      color: LushiStayTheme.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -0.2,
+                  TextSpan(
+                    text: '\$${p.pricePerDay.round()}',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: LushiStayTheme.textPrimary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const Gap(10),
-                  // Price line matching screenshot: $320 / nuit • 912 000 FC
-                  Row(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '\$${p.pricePerDay}',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: LushiStayTheme.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' / nuit',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: LushiStayTheme.textSecondary,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '  •  ',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: LushiStayTheme.textMuted,
-                                fontSize: 13,
-                              ),
-                            ),
-                            TextSpan(
-                              text: BrandConfig.formatFc(p.pricePerDay.toInt()),
-                              style: GoogleFonts.plusJakartaSans(
-                                color: LushiStayTheme.copperLight,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  TextSpan(
+                    text: ' / nuit',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: LushiStayTheme.textPrimary,
+                      fontSize: 15,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '  ·  ${BrandConfig.formatFc(p.pricePerDay.toInt())}',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: LushiStayTheme.copperLight,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -293,10 +251,6 @@ class _PropertyCardState extends State<PropertyCard> {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 400.ms).slideY(
-          begin: 0.08,
-          end: 0,
-          curve: Curves.easeOutCubic,
-        );
+    ).animate().fadeIn(duration: 350.ms);
   }
 }
