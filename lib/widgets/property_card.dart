@@ -80,20 +80,51 @@ class _PropertyCardState extends State<PropertyCard> {
                       itemCount: images.length,
                       onPageChanged: (i) => setState(() => _currentPage = i),
                       itemBuilder: (context, index) {
-                        return CachedNetworkImage(
-                          imageUrl: images[index],
+                        return Image.network(
+                          images[index],
                           fit: BoxFit.cover,
-                          placeholder: (ctx, url) => Container(
-                            color: LushiStayTheme.bgCard,
-                          ),
-                          errorWidget: (ctx, url, err) => Container(
-                            color: LushiStayTheme.bgCard,
-                            child: const Icon(
-                              Icons.image_not_supported_outlined,
-                              color: LushiStayTheme.textMuted,
-                              size: 32,
-                            ),
-                          ),
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Container(
+                              color: const Color(0xFFF1F5F9),
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: LushiStayTheme.blue,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: const Color(0xFFF1F5F9),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.apartment_rounded,
+                                      color: LushiStayTheme.blue,
+                                      size: 38,
+                                    ),
+                                    const Gap(6),
+                                    Text(
+                                      p.title,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: LushiStayTheme.textSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -108,7 +139,7 @@ class _PropertyCardState extends State<PropertyCard> {
                     onTap: _toggleFavorite,
                     child: Icon(
                       _isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: _isFavorite ? LushiStayTheme.destructive : Colors.white,
+                      color: _isFavorite ? LushiStayTheme.blue : Colors.white,
                       size: 26,
                       shadows: const [
                         Shadow(
@@ -240,7 +271,7 @@ class _PropertyCardState extends State<PropertyCard> {
                   TextSpan(
                     text: '  ·  ${BrandConfig.formatFc(p.pricePerDay.toInt())}',
                     style: GoogleFonts.plusJakartaSans(
-                      color: LushiStayTheme.copperLight,
+                      color: LushiStayTheme.oceanBlueMedium,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),

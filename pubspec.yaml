@@ -25,6 +25,7 @@ dependencies:
   skeletonizer: ^3.0.0
   gap: ^3.0.1
   shadcn_flutter: ^0.0.55
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:

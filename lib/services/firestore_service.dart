@@ -69,18 +69,24 @@ class FirestoreService {
 
   Stream<List<Property>> getProperties() {
     if (!isFirebaseInitialized) {
-      if (_useLocalDemo) {
-        return Stream.value(List<Property>.from(MockProperties.properties));
-      }
-      return Stream.value(const <Property>[]);
+      return Stream.value(List<Property>.from(MockProperties.properties));
     }
 
-    return _db!.collection('properties').snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        return Property.fromMap(doc.id, data);
-      }).toList();
-    });
+    try {
+      return _db!.collection('properties').snapshots().map((snapshot) {
+        if (snapshot.docs.isEmpty) {
+          return List<Property>.from(MockProperties.properties);
+        }
+        return snapshot.docs.map((doc) {
+          final data = doc.data();
+          return Property.fromMap(doc.id, data);
+        }).toList();
+      }).handleError((error) {
+        return List<Property>.from(MockProperties.properties);
+      });
+    } catch (_) {
+      return Stream.value(List<Property>.from(MockProperties.properties));
+    }
   }
 
   Stream<Property> getProperty(String propertyId) {

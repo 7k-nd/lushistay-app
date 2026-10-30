@@ -88,24 +88,29 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         itemCount: images.length,
                         onPageChanged: (i) => setState(() => _currentImageIndex = i),
                         itemBuilder: (context, index) {
-                          return CachedNetworkImage(
-                            imageUrl: images[index],
+                          return Image.network(
+                            images[index],
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              color: LushiStayTheme.bgCard,
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: LushiStayTheme.copper,
+                            loadingBuilder: (context, child, progress) {
+                              if (progress == null) return child;
+                              return Container(
+                                color: const Color(0xFFF1F5F9),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: LushiStayTheme.blue,
+                                  ),
                                 ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              color: LushiStayTheme.bgCard,
-                              child: const Icon(
-                                Icons.broken_image_outlined,
-                                color: LushiStayTheme.textMuted,
-                                size: 40,
+                              );
+                            },
+                            errorBuilder: (context, url, error) => Container(
+                              color: const Color(0xFFF1F5F9),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.broken_image_outlined,
+                                  color: LushiStayTheme.textMuted,
+                                  size: 40,
+                                ),
                               ),
                             ),
                           );
@@ -134,7 +139,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                 const Gap(12),
                                 _buildCircularButton(
                                   icon: _isFavorite ? Icons.favorite : Icons.favorite_border,
-                                  iconColor: _isFavorite ? LushiStayTheme.destructive : Colors.white,
+                                  iconColor: _isFavorite ? LushiStayTheme.blue : LushiStayTheme.textPrimary,
                                   onTap: () => setState(() => _isFavorite = !_isFavorite),
                                 ),
                               ],
@@ -423,12 +428,12 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.location_on, color: LushiStayTheme.copperLight, size: 32),
+                              const Icon(Icons.location_on, color: LushiStayTheme.coral, size: 32),
                               const Gap(6),
                               Text(
                                 p.quartier,
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white,
+                                  color: LushiStayTheme.textPrimary,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -492,7 +497,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       Text(
                         BrandConfig.formatFc(p.pricePerDay.toInt()),
                         style: GoogleFonts.plusJakartaSans(
-                          color: LushiStayTheme.copperLight,
+                          color: LushiStayTheme.oceanBlueMedium,
                           fontSize: 12.5,
                           fontWeight: FontWeight.w700,
                           decoration: TextDecoration.underline,
@@ -540,13 +545,20 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.55),
+          color: Colors.white,
           shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Icon(
           icon,
           size: 20,
-          color: iconColor ?? Colors.white,
+          color: iconColor ?? LushiStayTheme.textPrimary,
         ),
       ),
     );
@@ -640,7 +652,7 @@ class _AirbnbBookingSheetState extends State<_AirbnbBookingSheet> {
                 Text(
                   'Réservation confirmée !',
                   style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
+                    color: LushiStayTheme.textPrimary,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),
@@ -688,7 +700,7 @@ class _AirbnbBookingSheetState extends State<_AirbnbBookingSheet> {
                 Text(
                   'Détails de la réservation',
                   style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
+                    color: LushiStayTheme.textPrimary,
                     fontSize: 19,
                     fontWeight: FontWeight.w700,
                   ),
@@ -703,12 +715,12 @@ class _AirbnbBookingSheetState extends State<_AirbnbBookingSheet> {
                       children: [
                         IconButton(
                           onPressed: _nights > 1 ? () => setState(() => _nights--) : null,
-                          icon: const Icon(Icons.remove_circle_outline, color: LushiStayTheme.copper),
+                          icon: const Icon(Icons.remove_circle_outline, color: LushiStayTheme.coral),
                         ),
-                        Text('$_nights nuits', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold)),
+                        Text('$_nights nuits', style: GoogleFonts.plusJakartaSans(color: LushiStayTheme.textPrimary, fontWeight: FontWeight.bold)),
                         IconButton(
                           onPressed: () => setState(() => _nights++),
-                          icon: const Icon(Icons.add_circle_outline, color: LushiStayTheme.copper),
+                          icon: const Icon(Icons.add_circle_outline, color: LushiStayTheme.coral),
                         ),
                       ],
                     ),
@@ -723,12 +735,12 @@ class _AirbnbBookingSheetState extends State<_AirbnbBookingSheet> {
                       children: [
                         IconButton(
                           onPressed: _guests > 1 ? () => setState(() => _guests--) : null,
-                          icon: const Icon(Icons.remove_circle_outline, color: LushiStayTheme.copper),
+                          icon: const Icon(Icons.remove_circle_outline, color: LushiStayTheme.coral),
                         ),
-                        Text('$_guests pers.', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold)),
+                        Text('$_guests pers.', style: GoogleFonts.plusJakartaSans(color: LushiStayTheme.textPrimary, fontWeight: FontWeight.bold)),
                         IconButton(
                           onPressed: () => setState(() => _guests++),
-                          icon: const Icon(Icons.add_circle_outline, color: LushiStayTheme.copper),
+                          icon: const Icon(Icons.add_circle_outline, color: LushiStayTheme.coral),
                         ),
                       ],
                     ),
@@ -739,12 +751,12 @@ class _AirbnbBookingSheetState extends State<_AirbnbBookingSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Total estimé', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Total estimé', style: GoogleFonts.plusJakartaSans(color: LushiStayTheme.textPrimary, fontSize: 16, fontWeight: FontWeight.bold)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('\$$totalUsd', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800)),
-                        Text(BrandConfig.formatFc(totalUsd), style: GoogleFonts.plusJakartaSans(color: LushiStayTheme.copperLight, fontSize: 13, fontWeight: FontWeight.w700)),
+                        Text('\$$totalUsd', style: GoogleFonts.plusJakartaSans(color: LushiStayTheme.textPrimary, fontSize: 18, fontWeight: FontWeight.w800)),
+                        Text(BrandConfig.formatFc(totalUsd), style: GoogleFonts.plusJakartaSans(color: LushiStayTheme.oceanBlueMedium, fontSize: 13, fontWeight: FontWeight.w700)),
                       ],
                     ),
                   ],

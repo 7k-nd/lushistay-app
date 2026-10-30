@@ -39,7 +39,7 @@ class HostScreen extends StatelessWidget {
               Text(
                 'Tableau de bord',
                 style: GoogleFonts.playfairDisplay(
-                  color: Colors.white,
+                  color: LushiStayTheme.textPrimary,
                   fontSize: 27,
                   fontWeight: FontWeight.bold,
                 ),
@@ -225,7 +225,7 @@ class HostScreen extends StatelessWidget {
                               Text(
                                 user?.name ?? 'Grâce Mwamba',
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white,
+                                  color: LushiStayTheme.textPrimary,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,
                                 ),

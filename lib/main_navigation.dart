@@ -8,6 +8,7 @@ import 'package:elxau/screens/favorites_screen.dart';
 import 'package:elxau/screens/bookings_screen.dart';
 import 'package:elxau/services/auth_service.dart';
 import 'package:elxau/screens/login_screen.dart';
+import 'package:elxau/utils/app_svg_icons.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -43,9 +44,9 @@ class _MainNavigationState extends State<MainNavigation> {
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          color: LushiStayTheme.bgSurface,
+          color: Colors.white,
           border: Border(
-            top: BorderSide(color: LushiStayTheme.cardBorder, width: 0.5),
+            top: BorderSide(color: LushiStayTheme.cardBorder, width: 1),
           ),
         ),
         child: SafeArea(
@@ -55,11 +56,11 @@ class _MainNavigationState extends State<MainNavigation> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.search, 'Explorer'),
-                _buildNavItem(1, Icons.favorite_border, 'Favoris'),
-                _buildNavItem(2, Icons.luggage_outlined, 'Voyages'),
-                _buildNavItem(3, Icons.chat_bubble_outline, 'Messages'),
-                _buildNavItem(4, Icons.person_outline, 'Profil'),
+                _buildNavItem(0, AppSvgIcons.navExplore, 'Explorer'),
+                _buildNavItem(1, AppSvgIcons.navWishlist, 'Favoris'),
+                _buildNavItem(2, AppSvgIcons.navTrips, 'Voyages'),
+                _buildNavItem(3, AppSvgIcons.navMessages, 'Messages'),
+                _buildNavItem(4, AppSvgIcons.navProfile, 'Profil'),
               ],
             ),
           ),
@@ -68,9 +69,9 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(int index, String svgIcon, String label) {
     final isSelected = _currentIndex == index;
-    final color = isSelected ? LushiStayTheme.copper : LushiStayTheme.textMuted;
+    final color = isSelected ? LushiStayTheme.blue : LushiStayTheme.textMuted;
 
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
@@ -80,8 +81,8 @@ class _MainNavigationState extends State<MainNavigation> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 24),
-            const Gap(2),
+            AppSvgIcons.svg(svgIcon, color: color, size: 22),
+            const Gap(3),
             Text(
               label,
               style: GoogleFonts.plusJakartaSans(
@@ -114,7 +115,7 @@ class _MessagesScreen extends StatelessWidget {
               Text(
                 'Messages',
                 style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white,
+                  color: LushiStayTheme.textPrimary,
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
                 ),
@@ -132,7 +133,7 @@ class _MessagesScreen extends StatelessWidget {
                     Text(
                       'Aucun message',
                       style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
+                        color: LushiStayTheme.textPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
@@ -181,7 +182,7 @@ class _ProfileScreen extends StatelessWidget {
               Text(
                 'Profil',
                 style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white,
+                  color: LushiStayTheme.textPrimary,
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
                 ),
@@ -194,7 +195,7 @@ class _ProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 32,
-                    backgroundColor: LushiStayTheme.copper,
+                    backgroundColor: LushiStayTheme.oceanBlue,
                     child: Text(
                       initial,
                       style: GoogleFonts.plusJakartaSans(
@@ -212,7 +213,7 @@ class _ProfileScreen extends StatelessWidget {
                         Text(
                           name,
                           style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
+                            color: LushiStayTheme.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                           ),
@@ -240,6 +241,17 @@ class _ProfileScreen extends StatelessWidget {
               const Gap(32),
 
               // Menu items
+              _buildMenuItem(
+                icon: Icons.lock_outline_rounded,
+                label: 'Page d\'authentification animée',
+                subtitle: 'Arrière-plan vidéo/animé premium',
+                color: LushiStayTheme.blue,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  );
+                },
+              ),
               _buildMenuItem(
                 icon: Icons.settings_outlined,
                 label: 'Paramètres',

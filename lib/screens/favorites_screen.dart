@@ -35,7 +35,7 @@ class FavoritesScreen extends StatelessWidget {
                         Text(
                           'Favoris',
                           style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
+                            color: LushiStayTheme.textPrimary,
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.5,
@@ -69,7 +69,7 @@ class FavoritesScreen extends StatelessWidget {
                             Text(
                               'Créez votre première liste de favoris',
                               style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white,
+                                color: LushiStayTheme.textPrimary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),

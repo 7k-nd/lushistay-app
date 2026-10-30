@@ -8,6 +8,9 @@ import 'package:elxau/models/property.dart';
 import 'package:elxau/services/firestore_service.dart';
 import 'package:elxau/widgets/property_card.dart';
 import 'package:elxau/screens/property_detail_screen.dart';
+import 'package:elxau/screens/property_search_screen.dart';
+import 'package:elxau/utils/app_svg_icons.dart';
+import 'package:elxau/data/mock_data.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,12 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _favoriteIds = {};
 
   static const List<_CategoryItem> _categories = [
-    _CategoryItem('Tout', Icons.apps_rounded),
-    _CategoryItem('Hôtels', Icons.apartment_outlined),
-    _CategoryItem('Villas', Icons.home_outlined),
-    _CategoryItem('Apparts', Icons.dashboard_outlined),
-    _CategoryItem('Piscine', Icons.pool_outlined),
-    _CategoryItem('Lac', Icons.water_outlined),
+    _CategoryItem('Tout', AppSvgIcons.iconAll),
+    _CategoryItem('Hôtels', AppSvgIcons.iconHotel),
+    _CategoryItem('Villas', AppSvgIcons.iconVilla),
+    _CategoryItem('Apparts', AppSvgIcons.iconApartment),
+    _CategoryItem('Piscine', AppSvgIcons.iconPool),
+    _CategoryItem('Lac', AppSvgIcons.iconLake),
   ];
 
   void _toggleFavorite(String propertyId) {
@@ -48,10 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         bottom: false,
         child: StreamBuilder<List<Property>>(
+          initialData: MockProperties.properties,
           stream: firestoreService.getProperties(),
           builder: (context, snapshot) {
-            final isLoading = snapshot.connectionState == ConnectionState.waiting;
-            final allProperties = snapshot.data ?? [];
+            final allProperties = (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty)
+                ? snapshot.data!
+                : MockProperties.properties;
+            final isLoading = false;
 
             // Filter by category
             var filtered = allProperties.where((p) {
@@ -69,7 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                   child: GestureDetector(
                     onTap: () {
-                      // TODO: open search
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const PropertySearchScreen(),
+                        ),
+                      );
                     },
                     child: Container(
                       height: 56,
@@ -77,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: LushiStayTheme.bgCard,
                         borderRadius: BorderRadius.circular(32),
                         border: Border.all(color: LushiStayTheme.cardBorder),
+                        boxShadow: LushiStayTheme.softShadow,
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
@@ -111,16 +122,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Container(
-                            width: 36,
-                            height: 36,
+                            width: 38,
+                            height: 38,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: LushiStayTheme.cardBorder),
                             ),
-                            child: const Icon(
-                              Icons.tune_rounded,
-                              color: LushiStayTheme.textPrimary,
-                              size: 18,
+                            child: Center(
+                              child: AppSvgIcons.svg(
+                                AppSvgIcons.iconFilter,
+                                color: LushiStayTheme.textPrimary,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ],
@@ -160,8 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(cat.icon, size: 26, color: color),
-                              const Gap(4),
+                              AppSvgIcons.svg(cat.svgData, color: color, size: 24),
+                              const Gap(5),
                               Text(
                                 cat.label,
                                 maxLines: 1,
@@ -181,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 2,
                                 width: isSelected ? 28 : 0,
                                 decoration: BoxDecoration(
-                                  color: LushiStayTheme.copper,
+                                  color: LushiStayTheme.blue,
                                   borderRadius: BorderRadius.circular(1),
                                 ),
                               ),
@@ -279,6 +292,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _CategoryItem {
   final String label;
-  final IconData icon;
-  const _CategoryItem(this.label, this.icon);
+  final String svgData;
+  const _CategoryItem(this.label, this.svgData);
 }

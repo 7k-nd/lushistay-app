@@ -40,7 +40,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                     Text(
                       'Voyages',
                       style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
+                        color: LushiStayTheme.textPrimary,
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -0.5,
@@ -77,7 +77,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                               ? 'Aucun voyage prévu pour le moment'
                               : 'Aucun voyage passé',
                           style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
+                            color: LushiStayTheme.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                           ),
@@ -165,7 +165,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                   Text(
                                     b.property.title,
                                     style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.white,
+                                      color: LushiStayTheme.textPrimary,
                                       fontSize: 17,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -222,16 +222,17 @@ class _BookingsScreenState extends State<BookingsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : LushiStayTheme.bgCard,
+          color: isSelected ? LushiStayTheme.textPrimary : LushiStayTheme.bgSurface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Colors.white : LushiStayTheme.cardBorder,
+            color: isSelected ? LushiStayTheme.textPrimary : LushiStayTheme.cardBorder,
           ),
+          boxShadow: isSelected ? LushiStayTheme.softShadow : null,
         ),
         child: Text(
           label,
           style: GoogleFonts.plusJakartaSans(
-            color: isSelected ? Colors.black : Colors.white,
+            color: isSelected ? Colors.white : LushiStayTheme.textSecondary,
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),

@@ -6,6 +6,7 @@ import 'package:elxau/theme.dart';
 import 'package:elxau/services/auth_service.dart';
 import 'package:elxau/screens/login_screen.dart';
 import 'package:elxau/main_navigation.dart';
+import 'package:elxau/utils/app_svg_icons.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,10 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(milliseconds: 1400));
     if (!mounted) return;
 
-    final auth = context.read<AuthService>();
-    final target = auth.isAuthenticated
-        ? const MainNavigation()
-        : const LoginScreen();
+    final target = const MainNavigation();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
@@ -43,23 +41,32 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LushiStayTheme.copper,
+      backgroundColor: LushiStayTheme.blue,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Airbnb-style: big logo icon on brand color background
+            // Modern brand logo pill
             Container(
-              width: 80,
-              height: 80,
+              width: 84,
+              height: 84,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-              child: const Icon(
-                Icons.apartment_rounded,
-                color: LushiStayTheme.copper,
-                size: 44,
+              child: Center(
+                child: AppSvgIcons.svg(
+                  AppSvgIcons.iconVilla,
+                  color: LushiStayTheme.blue,
+                  size: 44,
+                ),
               ),
             ).animate().fadeIn(duration: 400.ms).scale(
                   begin: const Offset(0.9, 0.9),
