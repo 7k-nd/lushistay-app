@@ -52,6 +52,39 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     );
   }
 
+  // Simple purchase dialog placeholder
+  void _showPurchaseDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Acheter le bien'),
+        content: const Text('Cette fonctionnalité est en cours de mise en œuvre. Vous pouvez simuler un achat en confirmant.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Achat simulé – merci!')),
+              );
+            },
+            child: const Text('Confirmer'),
+          ),
+        ],
+      ),
+    );
+  }
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _AirbnbBookingSheet(property: widget.property),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = widget.property;
