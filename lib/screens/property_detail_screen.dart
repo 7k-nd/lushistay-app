@@ -77,13 +77,6 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       ),
     );
   }
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _AirbnbBookingSheet(property: widget.property),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
