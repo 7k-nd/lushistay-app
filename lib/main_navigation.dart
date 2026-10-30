@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:elxau/theme.dart';
 import 'package:elxau/screens/home_screen.dart';
+import 'package:elxau/screens/buy_screen.dart';
 import 'package:elxau/screens/favorites_screen.dart';
 import 'package:elxau/screens/bookings_screen.dart';
 import 'package:elxau/services/auth_service.dart';
@@ -27,6 +28,7 @@ class _MainNavigationState extends State<MainNavigation> {
     super.initState();
     _screens = [
       const HomeScreen(),
+      const BuyScreen(),
       const FavoritesScreen(),
       const BookingsScreen(),
       const _MessagesScreen(),
@@ -57,10 +59,11 @@ class _MainNavigationState extends State<MainNavigation> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(0, AppSvgIcons.navExplore, 'Explorer'),
-                _buildNavItem(1, AppSvgIcons.navWishlist, 'Favoris'),
-                _buildNavItem(2, AppSvgIcons.navTrips, 'Voyages'),
-                _buildNavItem(3, AppSvgIcons.navMessages, 'Messages'),
-                _buildNavItem(4, AppSvgIcons.navProfile, 'Profil'),
+                _buildNavItem(1, AppSvgIcons.navBuy, 'Acheter'),
+                _buildNavItem(2, AppSvgIcons.navWishlist, 'Favoris'),
+                _buildNavItem(3, AppSvgIcons.navTrips, 'Voyages'),
+                _buildNavItem(4, AppSvgIcons.navMessages, 'Messages'),
+                _buildNavItem(5, AppSvgIcons.navProfile, 'Profil'),
               ],
             ),
           ),
