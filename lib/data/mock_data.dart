@@ -102,9 +102,9 @@ class MockProperties {
       pricePerDay: 145,
       pricePerMonth: 3800,
       images: const [
-        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200&q=80',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
         'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1200&q=80',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80',
       ],
       rating: 4.90,
       reviewCount: 212,
@@ -281,8 +281,8 @@ class MockProperties {
       pricePerDay: 180,
       pricePerMonth: 4500,
       images: const [
-        'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
+        'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&q=80',
+        'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1200&q=80',
       ],
       rating: 4.93,
       reviewCount: 180,
@@ -326,8 +326,8 @@ class MockProperties {
       pricePerDay: 160,
       pricePerMonth: 3500,
       images: const [
-        'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=1200&q=80',
-        'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1200&q=80',
+        'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=80',
+        'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&q=80',
       ],
       rating: 4.89,
       reviewCount: 39,
